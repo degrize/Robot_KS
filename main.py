@@ -11,23 +11,21 @@ from kivymd.theming import ThemableBehavior
 from View.ManagerScreen.manager_screen import ManagerScreen
 
 if getattr(sys, "frozen", False):
-    os.environ["KITCHEN_SINK_ROOT"] = sys._MEIPASS
+    os.environ["ROBOT_KS_ROOT"] = sys._MEIPASS
 else:
     sys.path.append(os.path.abspath(__file__).split("demos")[0])
-    os.environ["KITCHEN_SINK_ROOT"] = str(Path(__file__).parent)
-os.environ["KITCHEN_SINK_ASSETS"] = os.path.join(
-    os.environ["KITCHEN_SINK_ROOT"], f"assets{os.sep}"
+    os.environ["ROBOT_KS_ROOT"] = str(Path(__file__).parent)
+os.environ["ROBOT_KS_ASSETS"] = os.path.join(
+    os.environ["ROBOT_KS_ROOT"], f"assets{os.sep}"
 )
 Window.softinput_mode = "below_target"
 
 
-
-
-class KitchenSink(MDApp):
+class RobotMain(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.title = "Robotiques"
-        self.description = "Iop OPi oio"
+        self.description = "Le projet de robotique ING-2"
         self.icon = "assets/images/logo.png"
         self.theme_cls.material_style = "M3"
         self.theme_cls.primary_palette = "Orange"
@@ -57,4 +55,4 @@ class KitchenSink(MDApp):
             self.theme_cls.primary_palette = "Orange"
 
 
-KitchenSink().run()
+RobotMain().run()

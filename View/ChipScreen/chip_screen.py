@@ -6,8 +6,9 @@ from View.ChipScreen.components import CustomChip
 class ChipScreenView(MDScreen):
     def on_enter(self):
         pass
+
     def removes_marks_all_chips(
-        self, selected_instance_chip, active_state: bool
+            self, selected_instance_chip, active_state: bool
     ) -> None:
         for instance_chip in self.ids.chip_size_box.children:
             if instance_chip != selected_instance_chip:

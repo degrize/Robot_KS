@@ -1,2 +1,2 @@
 # robot_ks
-le projet de robotique ING-2
+Le projet de robotique ING-2
