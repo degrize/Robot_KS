@@ -1,0 +1,61 @@
+<TwoScreenView>
+    md_bg_color: "white"
+    hero_to: hero_to
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDHeroTo:
+            id: hero_to
+            size_hint: 1, None
+            height: "200dp"
+
+        ScrollView:
+
+            MDList:
+                padding: "24dp", 0, "24dp", 0
+
+                MDLabel:
+                    text: "Description"
+                    font_style: "H5"
+                    bold: True
+                    adaptive_height: True
+                    padding_y: "24dp"
+
+                MDLabel:
+                    id:aaa
+                    text: app.description
+                    adaptive_height: True
+
+                MDLabel:
+                    text: "Previews"
+                    font_style: "H5"
+                    bold: True
+                    adaptive_height: True
+                    padding_y: "24dp"
+
+                MDBoxLayout:
+                    adaptive_height: True
+
+                    MDRelativeLayout:
+                        id: previews_box
+                        size_hint_y: None
+                        height: "56dp"
+
+
+
+    MDIconButton:
+        icon: "close"
+        md_bg_color: 1, 1, 1, .6
+        x: 12
+        pos_hint: {"top": .99}
+        on_release: root.on_tap_button_close()
+
+    MDIconButton:
+        icon: "heart"
+        md_bg_color: 1, 1, 1, 1
+        theme_icon_color: "Custom"
+        icon_color: "red"
+        x: root.width - (self.width + dp(12))
+        pos_hint: {"top": .99}
+        on_release: root.on_tap_button_close()

@@ -1,0 +1,112 @@
+#:import os os
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+
+
+<ChipLabel@MDLabel>
+    color: get_color_from_hex("#442c2e")
+
+
+<ChipScreenView>
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        FitImage:
+            size_hint_y: .42
+            source:
+                f"{os.environ['KITCHEN_SINK_ASSETS']}/" \
+                f"images/chip_screen/robot-ia.jpg"
+
+        ScrollView:
+            size_hint_y: .58
+
+            MDList:
+                padding: "18dp"
+                spacing: "24dp"
+                md_bg_color: app.theme_cls.bg_normal
+
+                Widget:
+                    size_hint_y: None
+                    height: "12dp"
+
+                ChipLabel:
+                    font_size: "15sp"
+                    text:
+                        "Borges Bot est un logiciel specifique à la manipulation de Robots. \n" \
+                        "Ce projet s'inscrit dans la cadre du cours de Robotique en Ingenieur STIC 2.\n" \
+                        "Utilitaires : SQL-lite et la biiliotheque graphique kivyMd"
+
+                Widget:
+                    size_hint_y: None
+                    height: "12dp"
+
+                ChipLabel:
+                    color: "#2693d1"
+                    text: "ENCADREUR PEDAGOGIQUE"
+                    font_style: "H6"
+                    bold: True
+
+                MDSeparator:
+                MDBoxLayout:
+                    adaptive_height: True
+                    spacing: "12dp"
+                    padding: 0, 0, 0, "12dp"
+
+                    FitImage:
+                        size_hint: None, None
+                        size: "56dp", "56dp"
+                        radius: self.height / 2
+                        source:
+                            f"{os.environ['KITCHEN_SINK_ASSETS']}/" \
+                            f"images/chip_screen/Esi.png"
+
+                    ChipLabel:
+                        text: "M. Koné Siriky Youssouf"
+                        font_size: "18sp"
+
+
+                Widget:
+                    size_hint_y: None
+                    height: "12dp"
+
+                ChipLabel:
+                    color: "#2693d1"
+                    text: "ETUDIANT"
+                    font_style: "H6"
+                    bold: True
+
+                MDSeparator:
+
+                MDBoxLayout:
+                    adaptive_height: True
+                    spacing: "12dp"
+                    padding: 0, 0, 0, "12dp"
+
+                    FitImage:
+                        size_hint: None, None
+                        size: "56dp", "56dp"
+                        radius: self.height / 2
+                        source:
+                            f"{os.environ['KITCHEN_SINK_ASSETS']}/" \
+                            f"images/chip_screen/meda.jpg"
+
+                    ChipLabel:
+                        text: "MEDA Kechiedou Lui Borges Degrize"
+                        font_size: "15sp"
+                ChipLabel:
+                    text: "kechiedou.meda18@inphb.ci / 0759948254"
+                    font_size: "13sp"
+                MDBoxLayout:
+                    id: chip_size_box
+                    adaptive_size: True
+                    spacing: "8dp"
+                    padding: "8dp"
+
+
+    MDIconButton:
+        id: back_button
+        icon: "arrow-left"
+        theme_text_color: "Custom"
+        pos: root.width - self.width - dp(12), root.height - self.height - dp(12)
+        md_bg_color: 1, 1, 1, .8
+        on_release: app.manager_screen.current = "menu"

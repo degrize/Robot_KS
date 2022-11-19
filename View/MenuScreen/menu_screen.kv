@@ -1,0 +1,70 @@
+<MenuScreenView>
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Projet de Robotique"
+            anchor_title: "left"
+            right_action_items :[["weather-sunny",lambda x : app.blackwhit(), "Sombre"]]
+            opposite_colors: True
+
+        MDGridLayout:
+            size_hint_y:.75
+            cols:2
+            padding:[dp(15),dp(15),dp(15),dp(35)]
+            spacing:dp(15)
+            ElementCard:
+                image:"images/manipulator-robot.gif"
+                text:"Commercer"
+                subtext:"demarrer la simulation de notre Robot"
+                on_release: root.manager.switch_screen("field")
+
+            ElementCard:
+                image:"images/futureRobot.gif"
+                text:"La Robotique"
+                subtext:"Univers partionnant de La Robotique"
+                on_release: root.manager.switch_screen("hero")
+
+            ElementCard:
+                image:"images/social-media.gif"
+                text:"Qui sommes nous?"
+                on_release: root.manager.switch_screen("chip")
+
+            ElementCard:
+                image:"images/settings.gif"
+                text:"Setting"
+                subtext:"faites toutes les configurations"
+
+
+<ElementCard@MDCard>:
+    #md_bg_color:129/255,55/255,6/255,1
+    elevation: 2
+    padding:dp(15)
+    spacing:dp(15)
+    radius:dp(25)
+    ripple_behavior: True
+    image:''
+    text:""
+    items_count:""
+    subtext:''
+
+    orientation:'vertical'
+
+    AsyncImage:
+        source: root.image
+        anim_delay: 0.05
+    MDBoxLayout:
+        orientation:'vertical'
+        MDLabel:
+            halign:"center"
+            text:root.text
+            font_style:"H6"
+        MDLabel:
+
+            halign:"center"
+            font_style:"Caption"
+            text:root.subtext
+        MDLabel:
+            halign:"center"
+            text:root.items_count

@@ -1,0 +1,88 @@
+#:import images_path kivymd.images_path
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import date datetime.date
+#:import datetime datetime.datetime
+#:import os os
+
+#:set today date.today()
+#:set now datetime.now()
+
+
+<CardScreenLabel@MDLabel>
+    adaptive_height: True
+    color: "#1e4974"
+    font_name: f"{os.environ['KITCHEN_SINK_ASSETS']}/fonts/nasalization.ttf"
+
+
+<CardScreenView>
+
+    FitImage:
+
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: "12dp"
+
+        CardScreenLabel:
+            id: time
+            color: 0, 0, 0, 1
+            text: today.strftime("%b-%d-%Y")
+            font_size: "18sp"
+
+        MDBoxLayout:
+            adaptive_size: True
+            spacing: "12dp"
+            padding: 0, "12dp", 0, 0
+
+            MDBoxLayout:
+                id: card_box
+                orientation: "vertical"
+                adaptive_size: True
+
+
+                CardCall:
+                    width: root.width*0.3
+                    height: root.height*0.9
+                    radius: [int(self.height / 12),]
+                    md_bg_color: get_color_from_hex("#1e4974")
+
+
+            MDBoxLayout:
+                id: card_box
+                orientation: "vertical"
+                adaptive_size: True
+
+                CardMessage:
+                    size_hint_y: None
+                    width: root.width*0.6
+                    height: root.height*0.7
+                    name_user: "Borges Bot"
+                    radius: [int(self.height / 10),]
+                    padding: "12dp"
+                    md_bg_color: get_color_from_hex("#3b7fad")
+
+
+                CardNotification:
+                    id: card_notification
+                    radius: [int(self.height / 10),]
+                    pos_hint: {"center_x": .5}
+                    padding: 0
+                    width: root.width*0.4
+                    text_top: "Debug • [size=12]5m[/size]"
+                    icon_top: "close"
+                    secondary_text_top: "Le programme a bien demarré"
+                    icon_color: get_color_from_hex("#1e4974")
+                    md_bg_color: get_color_from_hex("#5f9acc")
+
+
+
+        Widget:
+
+
+    MDIconButton:
+        icon: "arrow-left"
+        md_bg_color: 225, 225, 225, 1
+        on_release: app.manager_screen.current = "menu"
+        pos:
+            root.width - self.width - dp(12), \
+            root.height - self.height - dp(12)
