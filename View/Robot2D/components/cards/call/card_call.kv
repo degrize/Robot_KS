@@ -1,0 +1,149 @@
+#:import os os
+
+
+<CardCall>
+    orientation: "vertical"
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDBoxLayout:
+            orientation: "vertical"
+
+            MDLabel:
+                text: "Variables géométriques"
+                shorten: True
+                shorten_from: "right"
+                color: app.theme_cls.primary_dark
+                markup: True
+
+
+            GridLayout:
+                cols: 3
+                spacing: "8dp"
+
+                canvas:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDTextField:
+                    hint_text: "L0"
+                    helper_text: "4 chiffres"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 4
+
+                MDTextField:
+                    hint_text: " L1"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 2
+
+                MDTextField:
+                    hint_text: " L2"
+                    mode: "fill"
+                    input_filter: "float"
+                    #max_text_length: 2
+
+
+        MDBoxLayout:
+            orientation: "vertical"
+            MDLabel:
+                text: "Variables articulaires"
+                shorten: True
+                shorten_from: "right"
+                color: app.theme_cls.primary_dark
+                markup: True
+
+            GridLayout:
+                cols: 2
+                spacing: "8dp"
+
+                canvas:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDTextField:
+                    hint_text: "\u03B81" #Ɵ1
+                    helper_text: "4 chiffres"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 4
+
+                MDTextField:
+                    hint_text: "\u03B82" #Ɵ2
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 2
+
+        MDBoxLayout:
+            orientation: "vertical"
+            MDLabel:
+                text: "Le Point B à atteindre"
+                shorten: True
+                shorten_from: "right"
+                color: app.theme_cls.primary_dark
+                markup: True
+
+            GridLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                cols: 2
+                spacing: "8dp"
+
+                canvas:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDTextField:
+                    hint_text: "Abscisse de B"
+                    helper_text: "4 chiffres"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 4
+
+                MDTextField:
+                    hint_text: "Ordonnée de B"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 2
+
+        MDBoxLayout:
+            orientation: "vertical"
+
+            MDLabel:
+                text: "Paramètre du mouvement"
+                shorten: True
+                shorten_from: "right"
+                color: app.theme_cls.primary_dark
+                markup: True
+
+            GridLayout:
+                size_hint_y: None
+                height: self.minimum_height
+                cols: 2
+                spacing: "8dp"
+
+                canvas:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+
+                MDTextField:
+                    hint_text: "Nombre de pas"
+                    helper_text: "2 chiffres"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 4
+
+                MDTextField:
+                    hint_text: "durée du Trajet"
+                    mode: "fill"
+                    input_filter: "float"
+                    max_text_length: 2
+
+        MDBoxLayout:
+

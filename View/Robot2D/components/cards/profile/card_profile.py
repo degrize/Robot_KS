@@ -1,7 +1,7 @@
 from kivy.properties import StringProperty
 
 
-from View.CardScreen.components.cards.basecard import BaseCard
+from View.Robot2D.components.cards.basecard import BaseCard
 
 
 class CardProfile(BaseCard):

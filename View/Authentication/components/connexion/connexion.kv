@@ -1,4 +1,4 @@
-<OneScreen>
+<Connexion>
     md_bg_color: app.theme_cls.bg_dark
 
     MDLabel:
@@ -36,8 +36,15 @@
         pos_hint: {"center_x": .5, "center_y": .3}
         adaptive_height: True
 
+        MDLabel:
+            id: label_infoConexion
+            text : ""
+            font_style: "Subtitle2"
+            pos_hint : {'center_x': 0.5, 'center_y': 0.1}
+            halign: "center"
+
         MDTextField:
-            id: email_field
+            id: login_field
             icon_left: "account"
             mode: "round"
             hint_text: "Login"
@@ -47,6 +54,11 @@
 
         MDTextField:
             icon_left: "lock"
+            id: password_field
+            password : True
+            helper_text_mode : "on_focus"
+            input_filter: "int"
+            required: True
             mode: "round"
             hint_text: "Mot de passe"
             normal_color: .8, .8, .8, 1
@@ -56,12 +68,13 @@
         MDFillRoundFlatButton:
             text: "Se connecter"
             size_hint: None, None
-            size: email_field.size[0], email_field.size[1]
+            size: login_field.size[0], login_field.size[1]
             pos_hint: {"center_x": .5}
-            on_release: app.manager_screen.switch_screen("card")
+            #on_release: app.manager_screen.switch_screen("robot2D")
+            on_release: root.authentification()
 
     MDLabel:
-        text: "Avez vous oublié le mot de passe?"
+        text: "DEFILEZ VERS LA DROITE POUR RETROUVER LE MOT DE PASSE"
         bold: True
         adaptive_height: True
         halign: "center"

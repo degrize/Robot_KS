@@ -146,7 +146,9 @@ class ManagerScreen(ScreenManager):
                         "OneLineItem",
                         module="View.common.onelinelistitem.one_line_list_item",
                     )
-                Builder.load_file(path_to_kv)
+                with open(path_to_kv, encoding='utf-8') as f:
+                    Builder.load_string(f.read())
+                #Builder.load_file(path_to_kv)
 
         one_line_list_item_path = os.path.join(
             "View", "common", "onelinelistitem", "one_line_list_item.kv"

@@ -14,7 +14,7 @@
     font_name: f"{os.environ['ROBOT_KS_ASSETS']}/fonts/nasalization.ttf"
 
 
-<CardScreenView>
+<Robot2DView>
 
     FitImage:
 
@@ -38,24 +38,13 @@
                 id: card_box
                 orientation: "vertical"
                 adaptive_size: True
-
-
-                CardCall:
-                    width: root.width*0.3
-                    height: root.height*0.9
-                    radius: [int(self.height / 12),]
-                    md_bg_color: get_color_from_hex("#1e4974")
-
-
-            MDBoxLayout:
-                id: card_box
-                orientation: "vertical"
-                adaptive_size: True
+                spacing: "10dp"
 
                 CardMessage:
+                    id: box
                     size_hint_y: None
-                    width: root.width*0.6
-                    height: root.height*0.7
+                    width: root.width*0.45
+                    height: root.height*0.44
                     name_user: "Borges Bot"
                     radius: [int(self.height / 10),]
                     padding: "12dp"
@@ -65,15 +54,26 @@
                 CardNotification:
                     id: card_notification
                     radius: [int(self.height / 10),]
-                    pos_hint: {"center_x": .5}
+                    size_hint_y: None
                     padding: 0
-                    width: root.width*0.4
+                    width: root.width*0.45
+                    height: root.height*0.4
                     text_top: "Debug • [size=12]5m[/size]"
                     icon_top: "close"
                     secondary_text_top: "Le programme a bien demarré"
                     icon_color: get_color_from_hex("#1e4974")
                     md_bg_color: get_color_from_hex("#5f9acc")
 
+            MDBoxLayout:
+                id: card_box
+                orientation: "vertical"
+                adaptive_size: True
+
+                CardCall:
+                    width: root.width*0.45
+                    height: root.height*0.9
+                    radius: [int(self.height / 12),]
+                    md_bg_color: get_color_from_hex("#ffffff")
 
 
         Widget:
@@ -86,3 +86,17 @@
         pos:
             root.width - self.width - dp(12), \
             root.height - self.height - dp(12)
+
+    MDScreen:
+
+        width: root.width
+        MDFloatingActionButtonSpeedDial:
+            data: root.data
+            root_button_anim: True
+            hint_animation: True
+            icon: "menu"
+            bg_hint_color: app.theme_cls.primary_dark
+            right_pad: True
+            right_pad_value: "12dp"
+
+

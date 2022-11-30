@@ -1,0 +1,109 @@
+<ThirdScreenTextField@MDTextField>
+    fill_color_normal: 0, 0, 0, .1
+    fill_color_focus: 0, 0, 0, .2
+    mode: "fill"
+
+
+<MdpOublieView>
+    md_bg_color: app.theme_cls.bg_dark
+
+    FitImage:
+        id: bg
+        size_hint: 1, .4
+        y: root.height - self.height
+        source:
+            f"{os.environ['ROBOT_KS_ROOT']}" \
+            f"/assets/images/chip_screen/robot-ia.jpg"
+
+    RoundCard:
+        id: avatar_card
+        size_hint: None, None
+        size: "150dp", "150dp"
+        radius: self.height / 2
+        y: bg.y + dp(56)
+        elevation: 3
+        pos_hint: {"center_x": .5, "center_y": .85}
+        padding:dp(15)
+        ripple_behavior: True
+
+        AsyncImage:
+            radius: avatar_card.radius
+            anim_delay: 0.03
+            source:
+                f"{os.environ['ROBOT_KS_ROOT']}" \
+                f"/images/manipulator-robot.gif"
+
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        y: box_field.y + box_field.height + dp(24)
+        pos_hint: {"center_x": .5}
+        spacing: "12dp"
+
+        MDLabel:
+            id: label_infoConexion
+            text : "Le mail n'a pas été envoyé"
+            theme_text_color: "Custom"
+            text_color: "red"
+            font_style: "Subtitle2"
+            pos_hint : {'center_x': 0.5, 'center_y': 0.1}
+            halign: "center"
+            opacity: 0
+
+        MDLabel:
+            text: "Trouver le mot de passe"
+            font_style: "H5"
+            bold: True
+            adaptive_height: True
+            halign: "center"
+
+
+    MDBoxLayout:
+        id: card_fields
+        adaptive_height: True
+        pos_hint: {"center_y": .4}
+        padding: "156dp", 0, "156dp", 0
+
+        MDBoxLayout:
+            id: box_field
+            orientation: "vertical"
+            adaptive_height: True
+            pos_hint: {"center_y": .5}
+            spacing: "12dp"
+
+
+            ThirdScreenTextField:
+                hint_text: "Renseignez le mail"
+                hint_text_color_normal: "green"
+                hint_text_color_focus: "green"
+                text_color_focus: "gray"
+                icon_left: "email"
+                id: email_field
+                validator: "email"
+                helper_text: "user@domaine.com"
+                required: True
+                helper_text_mode : "persistent"
+
+
+    MDFillRoundFlatButton:
+        id: btn_sendEmail
+        text: "Envoyer le mail"
+        y: "120dp"
+        pos_hint: {"center_x": .5}
+        size_hint_x: None
+        size: box_field.size[0], box_field.size[1]
+        on_release: root.sendMail()
+
+
+    MDLabel:
+        text: "Envoyer le mail"
+        pos_hint: {"center_x": .5}
+        size_hint_x: None
+        text: "DEFILEZ VERS LA GAUCHE POUR VOUS CONNECTER"
+        bold: True
+        adaptive_height: True
+        halign: "center"
+        font_style: "Caption"
+        theme_text_color: "Hint"
+        size: box_field.size[0], box_field.size[1]
+        y: dp(48)

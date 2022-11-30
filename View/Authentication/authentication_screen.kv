@@ -1,20 +1,28 @@
 #:import os os
 
 
-<FieldScreenView>
+<AuthenticationView>
 
     MDCarousel:
         id: carousel
+        on_slide_progress: root.do_animation_slide_content(*args)
         on_index:
             root.on_index(args[1])
             app.manager_screen.set_bars_colors(app.theme_cls, f"field_{args[1]}")
 
-        OneScreen:
+        Connexion:
+
+        MdpOublieView:
+            opacity: 0
+
+    Dots:
+        id: dots
+        y: "24dp"
 
     MDIconButton:
         id: back_button
         icon: "arrow-left"
         theme_text_color: "Custom"
         pos: root.width - self.width - dp(12), root.height - self.height - dp(12)
-        md_bg_color: 0, 0, 0, .2
+        md_bg_color: 255, 255, 255, 1
         on_release: app.manager_screen.current = "menu"

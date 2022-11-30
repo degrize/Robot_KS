@@ -1,9 +1,9 @@
 from kivymd.uix.screen import MDScreen
 
-from View.ChipScreen.components import CustomChip
+from View.Apropos.components import CustomChip
 
 
-class ChipScreenView(MDScreen):
+class AproposView(MDScreen):
     def on_enter(self):
         pass
 

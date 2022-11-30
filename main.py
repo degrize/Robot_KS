@@ -10,6 +10,10 @@ from kivymd.theming import ThemableBehavior
 
 from View.ManagerScreen.manager_screen import ManagerScreen
 
+import sqlite3
+
+
+
 if getattr(sys, "frozen", False):
     os.environ["ROBOT_KS_ROOT"] = sys._MEIPASS
 else:
@@ -42,7 +46,8 @@ class RobotMain(MDApp):
         self.manager_screen = ManagerScreen()
 
     def build(self) -> ManagerScreen:
-        self.manager_screen.add_widget(self.manager_screen.create_screen("menu"))
+        # self.manager_screen.add_widget(self.manager_screen.create_screen("menu"))
+        self.manager_screen.add_widget(self.manager_screen.create_screen("robot2D"))
         return self.manager_screen
 
     def blackwhit(self):
