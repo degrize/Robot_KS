@@ -38,13 +38,13 @@
                 id: card_box
                 orientation: "vertical"
                 adaptive_size: True
-                spacing: "10dp"
+                spacing: "4dp"
 
                 CardMessage:
                     id: box
                     size_hint_y: None
-                    width: root.width*0.45
-                    height: root.height*0.44
+                    width: root.width*0.5
+                    height: root.height*0.57
                     name_user: "Borges Bot"
                     radius: [int(self.height / 10),]
                     padding: "12dp"
@@ -56,8 +56,8 @@
                     radius: [int(self.height / 10),]
                     size_hint_y: None
                     padding: 0
-                    width: root.width*0.45
-                    height: root.height*0.4
+                    width: root.width*0.5
+                    height: root.height*0.35
                     text_top: "Debug • [size=12]5m[/size]"
                     icon_top: "close"
                     secondary_text_top: "Le programme a bien demarré"
@@ -71,8 +71,8 @@
 
                 CardCall:
                     id: setting
-                    width: root.width*0.45
-                    height: root.height*0.9
+                    width: root.width*0.4
+                    height: root.height*0.95
                     radius: [int(self.height / 12),]
                     md_bg_color: get_color_from_hex("#ffffff")
 

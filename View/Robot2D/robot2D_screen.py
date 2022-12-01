@@ -1,5 +1,6 @@
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.button import MDFloatingActionButtonSpeedDial
+from kivymd.utils import asynckivy
 
 from View.Robot2D.components import CardProfile  # NOQA
 from View.Robot2D.components import CardMessage  # NOQA
@@ -141,201 +142,205 @@ class Robot2DView(MDScreen):
         self.graphique.draw()
 
     def simulateRobot(self):
+
         """
             Dans cette methode nous simulons notre robot, le bras du robot se déplacera jusqu'au point B
         """
+        async def simulateRobot():
+            etatBtnPas = True
+            etatBtnBip = True
+            etatBtnR0 = True
+            etatBtnTrajectoire = True
+            X_Pi = []
+            Y_Pi = []
 
-        etatBtnPas = True
-        etatBtnBip = True
-        etatBtnR0 = True
-        etatBtnTrajectoire = True
-        X_Pi = []
-        Y_Pi = []
+            if self.nbrePas.text == "":
+                return
 
-        if self.nbrePas.text == "":
-            return
+            if self.dureeTrajetAB.text == "":
+                return
 
-        if self.dureeTrajetAB.text == "":
-            return
+            result = self.calculMatricesPassage()
+            nbrePas = int(self.nbrePas.text)
+            L0 = result[1]
+            L1 = result[6]
+            L2 = result[7]
+            YB = result[4]
+            A0 = result[3]
+            XB = result[5]
+            A20 = result[2]
+            vitesse = float(self.dureeTrajetAB.text) / nbrePas
 
-        result = self.calculMatricesPassage()
-        nbrePas = int(self.nbrePas.text)
-        L0 = result[1]
-        L1 = result[6]
-        L2 = result[7]
-        YB = result[4]
-        A0 = result[3]
-        XB = result[5]
-        A20 = result[2]
-        vitesse = float(self.dureeTrajetAB.text) / nbrePas
+            for i in range(1, nbrePas + 1):
+                self.plot.cla()
+                # Définir les propriétés du nouveau graph
+                self.plot.set_xlabel('Y0')
+                self.plot.set_ylabel('X0')
+                self.plot.yaxis.set_ticks_position('right')
+                self.plot.set_xticks(range(8))
+                self.plot.set_yticks(range(8))
+                self.plot.set_xlim((8, -1))
+                self.plot.set_ylim((-1, 8))
+                self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=15, lw=3)
+                self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=15, lw=3)
+                # self.plot.set_axis_off()
+                # self.plot.grid(True)
 
-        for i in range(1, nbrePas + 1):
-            self.plot.cla()
-            # Définir les propriétés du nouveau graph
-            self.plot.set_xlabel('Y0')
-            self.plot.set_ylabel('X0')
-            self.plot.yaxis.set_ticks_position('right')
-            self.plot.set_xticks(range(8))
-            self.plot.set_yticks(range(8))
-            self.plot.set_xlim((8, -1))
-            self.plot.set_ylim((-1, 8))
-            self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=15, lw=3)
-            self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=15, lw=3)
-            # self.plot.set_axis_off()
-            # self.plot.grid(True)
+                # Distance X entre deux pas
+                disXPas = (XB - A0[0]) / nbrePas
+                if disXPas < 0:
+                    disXPas = -disXPas
+                # Distances-Y entre deux pas
+                disYPas = (YB - A0[1]) / nbrePas
+                if disYPas < 0:
+                    disYPas = -disYPas
+                if XB >= A0[0]:
+                    Xi = A0[0] + i * disXPas
+                else:
+                    Xi = A0[0] - i * disXPas
 
-            # Distance X entre deux pas
-            disXPas = (XB - A0[0]) / nbrePas
-            if disXPas < 0:
-                disXPas = -disXPas
-            # Distances-Y entre deux pas
-            disYPas = (YB - A0[1]) / nbrePas
-            if disYPas < 0:
-                disYPas = -disYPas
-            if XB >= A0[0]:
-                Xi = A0[0] + i * disXPas
-            else:
-                Xi = A0[0] - i * disXPas
+                if YB > A0[1]:
+                    Yi = A0[1] + i * disYPas
+                else:
+                    Yi = A0[1] - i * disYPas
 
-            if YB > A0[1]:
-                Yi = A0[1] + i * disYPas
-            else:
-                Yi = A0[1] - i * disYPas
+                # LES CALCULS ------------------------------------->
 
-            # LES CALCULS ------------------------------------->
+                B1 = -2 * Yi * L1
+                B2 = 2 * L1 * (L0 - Xi)
+                B3 = L2 ** 2 - Yi ** 2 - (L0 - Xi) ** 2 - L1 ** 2
+                teta_1 = 0
+                teta_2 = 0
+                SO1 = 0
+                CO1 = 0
+                epsi = 1
+                if B3 == 0:
+                    teta_1 = Math.degrees(Math.atan2(-B2, B1))
+                else:
+                    if (B1 ** 2 + B2 ** 2 - B3 ** 2) >= 0:
+                        SO1 = (B3 * B1 + epsi * B2 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
+                        CO1 = (B3 * B2 - epsi * B1 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
+                        teta_1 = Math.degrees(Math.atan2(SO1, CO1))
+                    else:
+                        # conf.configure(bg="red")
+                        break
+                Yn1 = L2 * SO1
+                Yn2 = L2 * CO1
 
-            B1 = -2 * Yi * L1
-            B2 = 2 * L1 * (L0 - Xi)
-            B3 = L2 ** 2 - Yi ** 2 - (L0 - Xi) ** 2 - L1 ** 2
-            teta_1 = 0
-            teta_2 = 0
-            SO1 = 0
-            CO1 = 0
-            epsi = 1
-            if B3 == 0:
-                teta_1 = Math.degrees(Math.atan2(-B2, B1))
-            else:
-                if (B1 ** 2 + B2 ** 2 - B3 ** 2) >= 0:
-                    SO1 = (B3 * B1 + epsi * B2 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
-                    CO1 = (B3 * B2 - epsi * B1 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
-                    teta_1 = Math.degrees(Math.atan2(SO1, CO1))
+                if L2 != 0:
+                    teta_2 = Math.degrees(Math.atan2(Yn1 / L2, Yn2 / L2))
                 else:
                     # conf.configure(bg="red")
                     break
-            Yn1 = L2 * SO1
-            Yn2 = L2 * CO1
+                # conf.configure(bg="green")
+                XA1i = L1 * Math.cos(Math.radians(teta_1)) + L0
+                YA1i = L1 * Math.sin(Math.radians(teta_1))
 
-            if L2 != 0:
-                teta_2 = Math.degrees(Math.atan2(Yn1 / L2, Yn2 / L2))
-            else:
-                # conf.configure(bg="red")
-                break
-            # conf.configure(bg="green")
-            XA1i = L1 * Math.cos(Math.radians(teta_1)) + L0
-            YA1i = L1 * Math.sin(Math.radians(teta_1))
+                """
+                #Position des Pi
+                txtTeta1Pi.delete(0,END)
+                txtTeta1Pi.insert(0,float((int(teta_1*1000))/1000))
+                txtTeta2Pi.delete(0,END)
+                txtTeta2Pi.insert(0,float((int(teta_2*1000))/1000))
+                txtXPi.delete(0,END)
+                txtXPi.insert(0,float((int(Xi*1000))/1000))
+                txtYPi.delete(0,END)
+                txtYPi.insert(0,float((int(Yi*1000))/1000))
+                """
 
-            """
-            #Position des Pi
-            txtTeta1Pi.delete(0,END)
-            txtTeta1Pi.insert(0,float((int(teta_1*1000))/1000))
-            txtTeta2Pi.delete(0,END)
-            txtTeta2Pi.insert(0,float((int(teta_2*1000))/1000))
-            txtXPi.delete(0,END)
-            txtXPi.insert(0,float((int(Xi*1000))/1000))
-            txtYPi.delete(0,END)
-            txtYPi.insert(0,float((int(Yi*1000))/1000))
-            """
+                # Trajectoire
+                if etatBtnTrajectoire:
+                    XA0 = result[3][0]
+                    XB = result[5]
+                    YA0 = result[3][1]
+                    YB = result[4]
+                    a = (YA0 - YB) / (XA0 - XB)
+                    b = YB - a * XB
+                    x = range(-100, 101)  # ,nbrePas)
+                    y = a * x + b
+                    # Trace la droite
+                    # self.plot.plot(y,x,"k-",lw=3)
+                    # Droite entre A et Pi
+                    # self.plot.plot([A0[1],Yi],[A0[0],Xi],"y-",lw=5)
 
-            # Trajectoire
-            if etatBtnTrajectoire:
-                XA0 = result[3][0]
-                XB = result[5]
-                YA0 = result[3][1]
-                YB = result[4]
-                a = (YA0 - YB) / (XA0 - XB)
-                b = YB - a * XB
-                x = range(-100, 101)  # ,nbrePas)
-                y = a * x + b
-                # Trace la droite
-                # self.plot.plot(y,x,"k-",lw=3)
-                # Droite entre A et Pi
-                # self.plot.plot([A0[1],Yi],[A0[0],Xi],"y-",lw=5)
+                # sauvegarde-les coordonnées des Pi
+                X_Pi.append(Xi)
+                Y_Pi.append(Yi)
 
-            # sauvegarde-les coordonnées des Pi
-            X_Pi.append(Xi)
-            Y_Pi.append(Yi)
+                # Les Pas
+                if etatBtnPas:
+                    for j in range(0, len(X_Pi)):
+                        self.plot.scatter([Y_Pi[j]], [X_Pi[j]], s=200, color='#3dd9c1')
 
-            # Les Pas
-            if etatBtnPas:
-                for j in range(0, len(X_Pi)):
-                    self.plot.scatter([Y_Pi[j]], [X_Pi[j]], s=200, color='#3dd9c1')
+                # for j in range(0,X_Pi.len()):
+                #   print(X_Pi, Y_Pi)
+                # tracer L0
 
-            # for j in range(0,X_Pi.len()):
-            #   print(X_Pi, Y_Pi)
-            # tracer L0
+                self.plot.plot([0.0, 0.0], [0.0, L0], "b-", lw=7)
+                # tracer L1
+                self.plot.plot([0.0, YA1i], [L0, XA1i], "b-", lw=7)
+                # tracer L2
+                self.plot.plot([YA1i, Yi], [XA1i, Xi], "b-", lw=7)
+                # Point Pi
+                self.plot.scatter([Yi], [Xi], s=500, color='#FF0000')
+                # Point A0
+                self.plot.scatter([0], [L0], s=500, color='black')
+                # Point A2
+                self.plot.scatter([YA1i], [XA1i], s=500, color='black')
+                if i != 0:
+                    # Le point A
+                    self.plot.scatter([A0[1]], [A0[0]], s=300, color='#006633')
+                else:
+                    # Le point A
+                    self.plot.scatter([A0[1]], [A0[0]], s=500, color='#FF0000')
+                if i == nbrePas:
+                    # Le point B
+                    self.plot.scatter([YB], [XB], s=300, color='#FF0000')
+                else:
+                    # Le point B
+                    self.plot.scatter([YB], [XB], s=300, color='#00FF33')
 
-            self.plot.plot([0.0, 0.0], [0.0, L0], "b-", lw=7)
-            # tracer L1
-            self.plot.plot([0.0, YA1i], [L0, XA1i], "b-", lw=7)
-            # tracer L2
-            self.plot.plot([YA1i, Yi], [XA1i, Xi], "b-", lw=7)
-            # Point Pi
-            self.plot.scatter([Yi], [Xi], s=500, color='#FF0000')
-            # Point A0
-            self.plot.scatter([0], [L0], s=500, color='black')
-            # Point A2
-            self.plot.scatter([YA1i], [XA1i], s=500, color='black')
-            if i != 0:
-                # Le point A
-                self.plot.scatter([A0[1]], [A0[0]], s=300, color='#006633')
-            else:
-                # Le point A
-                self.plot.scatter([A0[1]], [A0[0]], s=500, color='#FF0000')
-            if i == nbrePas:
-                # Le point B
-                self.plot.scatter([YB], [XB], s=300, color='#FF0000')
-            else:
-                # Le point B
-                self.plot.scatter([YB], [XB], s=300, color='#00FF33')
+                # Le repere R0
+                """
+                tatBtnR0=True
+                if etatBtnR0==True:
+                    self.plot.plot([0.0,0.0],[0.0,15.0],"r-",lw=2)
+                    self.plot.plot([0.0,15.0],[0.0,0.0],"r-",lw=2)
+                #Le repere R1
+                etatBtnR1=True
+                if etatBtnR1==True:
+                    m=(YA1i-0)/(XA1i-L0)
+                    c=YA1i-m*XA1i
+                    u = m*(16)+c
+                    self.plot.plot([0.0,u],[L0,16.0],"y--",lw=2)
+                    l = (-1/m)*(16)+YA1i+(1/m)*XA1i
+                    self.plot.plot([0.0,l],[L0,16.0],"y--",lw=2)
+                #Le repere R2
+                etatBtnR2=True
+                if etatBtnR2==True:
+                    m=(YA1i-Yi)/(XA1i-Xi)
+                    c=YA1i-m*XA1i
+                    u = m*16+c
+                    self.plot.plot([YA1i,u],[XA1i,16.0],"m--",lw=2)
+                    l = (-1/m)*(-16)+YA1i+(1/m)*XA1i
+                    self.plot.plot([YA1i,l],[XA1i,-16.0],"m--",lw=2)
+                """
+                # Le sol
+                self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=10)
+                self.plot.plot([0.0, 5.0], [0.0, 0.0], "k--", lw=3)
+                # self.plot.grid(True)
+                await asynckivy.sleep(0)
+                self.graphique.draw()
+                """
+                if etatBtnBip==True:
+                    #Le Bip
+                    winsound.Beep(440, 250)
+                """
 
-            # Le repere R0
-            """
-            tatBtnR0=True
-            if etatBtnR0==True:
-                self.plot.plot([0.0,0.0],[0.0,15.0],"r-",lw=2)
-                self.plot.plot([0.0,15.0],[0.0,0.0],"r-",lw=2)
-            #Le repere R1
-            etatBtnR1=True
-            if etatBtnR1==True:
-                m=(YA1i-0)/(XA1i-L0)
-                c=YA1i-m*XA1i
-                u = m*(16)+c
-                self.plot.plot([0.0,u],[L0,16.0],"y--",lw=2)
-                l = (-1/m)*(16)+YA1i+(1/m)*XA1i
-                self.plot.plot([0.0,l],[L0,16.0],"y--",lw=2)
-            #Le repere R2
-            etatBtnR2=True
-            if etatBtnR2==True:
-                m=(YA1i-Yi)/(XA1i-Xi)
-                c=YA1i-m*XA1i
-                u = m*16+c
-                self.plot.plot([YA1i,u],[XA1i,16.0],"m--",lw=2)
-                l = (-1/m)*(-16)+YA1i+(1/m)*XA1i
-                self.plot.plot([YA1i,l],[XA1i,-16.0],"m--",lw=2)
-            """
-            # Le sol
-            self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=10)
-            self.plot.plot([0.0, 5.0], [0.0, 0.0], "k--", lw=3)
-            # self.plot.grid(True)
-            self.graphique.draw()
-            """
-            if etatBtnBip==True:
-                #Le Bip
-                winsound.Beep(440, 250)
-            """
-            # time.sleep(vitesse)
-            # fenetre.update()
-            time.sleep(vitesse)
+                # time.sleep(vitesse)
+                # fenetre.update()
+
+        asynckivy.start(simulateRobot())
 
     def verifAllFieldsCorrect(self):
         """
