@@ -70,6 +70,7 @@
                 adaptive_size: True
 
                 CardCall:
+                    id: setting
                     width: root.width*0.45
                     height: root.height*0.9
                     radius: [int(self.height / 12),]
@@ -91,7 +92,7 @@
 
         width: root.width
         MDFloatingActionButtonSpeedDial:
-            data: root.data
+            data: root.btn_layout()
             root_button_anim: True
             hint_animation: True
             icon: "menu"
