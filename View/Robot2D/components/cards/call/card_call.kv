@@ -3,7 +3,7 @@
 
 <CardCall>
     orientation: "vertical"
-    padding: "10dp", "30dp", "10dp", "60dp"
+    padding: "10dp", "30dp", "10dp", "80dp"
 
     MDBoxLayout:
         orientation: "vertical"
@@ -31,27 +31,23 @@
                 MDTextField:
                     id: L0
                     hint_text: "L0"
-                    helper_text: "2 chiffres"
                     mode: "fill"
                     input_filter: "float"
-                    max_text_length: 2
-                    required: True
+                    max_text_length: 3
 
                 MDTextField:
                     id: L1
                     hint_text: " L1"
                     mode: "fill"
                     input_filter: "float"
-                    max_text_length: 2
-                    helper_text: "2 chiffres"
+                    max_text_length: 3
 
                 MDTextField:
                     id: L2
                     hint_text: " L2"
                     mode: "fill"
                     input_filter: "float"
-                    #max_text_length: 2
-                    helper_text: "2 chiffres"
+                    max_text_length: 3
 
 
         MDBoxLayout:
@@ -75,18 +71,16 @@
                 MDTextField:
                     id: Ɵ1
                     hint_text: "\u03B81" #Ɵ1
-                    helper_text: "2 chiffres"
                     mode: "fill"
                     input_filter: "float"
-                    max_text_length: 2
+                    max_text_length: 3
 
                 MDTextField:
                     id: Ɵ2
                     hint_text: "\u03B82" #𝛉2
                     mode: "fill"
                     input_filter: "float"
-                    helper_text: "2 chiffres"
-                    max_text_length: 2
+                    max_text_length: 3
 
         MDBoxLayout:
             orientation: "vertical"
@@ -111,17 +105,15 @@
                 MDTextField:
                     id: absB
                     hint_text: "Abscisse de B"
-                    helper_text: "1 chiffres"
                     mode: "fill"
-                    input_filter: "float"
+                    input_filter: "int"
                     max_text_length: 1
 
                 MDTextField:
                     id: ordB
                     hint_text: "Ordonnée de B"
-                    helper_text: "1 chiffres"
                     mode: "fill"
-                    input_filter: "float"
+                    input_filter: "int"
                     max_text_length: 1
 
         MDBoxLayout:
@@ -148,7 +140,6 @@
                 MDTextField:
                     id: nbrePas
                     hint_text: "Nombre de pas"
-                    helper_text: "2 chiffres"
                     mode: "fill"
                     input_filter: "int"
                     max_text_length: 3
@@ -158,6 +149,5 @@
                     hint_text: "durée du Trajet"
                     mode: "fill"
                     input_filter: "float"
-                    helper_text: "2 chiffres"
-                    max_text_length: 2
+                    max_text_length: 3
                     spacing: "14dp"

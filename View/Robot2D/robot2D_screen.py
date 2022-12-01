@@ -26,6 +26,7 @@ class Robot2DView(MDScreen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.restartSimulator = False
         """  Nous faisons correspondre nos attributs class a son champs  """
         self.dureeTrajetAB = self.ids.setting.ids.dureeTrajetAB
         self.nbrePas = self.ids.setting.ids.nbrePas
@@ -43,19 +44,19 @@ class Robot2DView(MDScreen):
 
     def calculMatricesPassage(self):
         if self.verifAllFieldsCorrect():
-            L00 = float(self.ids.setting.ids.L0.text)
-            L11 = float(self.ids.setting.ids.L1.text)
-            L22 = float(self.ids.setting.ids.L2.text)
+            L00 = float(self.L0.text)
+            L11 = float(self.L1.text)
+            L22 = float(self.L2.text)
 
             if L00 >= 7 or L11 >= 7 or L22 >= 7:
                 print("verifier L0 - L1 & L2")
                 return
 
-            O11 = Math.radians(float(self.ids.setting.ids.Ɵ1.text))
-            O22 = Math.radians(float(self.ids.setting.ids.Ɵ2.text))
-            nbrePas = int(self.ids.setting.ids.nbrePas.text)
-            YB = float(self.ids.setting.ids.ordB.text)  # la valeur d'ordonnées de B
-            XB = float(self.ids.setting.ids.absB.text)  # la valeur d'abscisse de B
+            O11 = Math.radians(float(self.Ɵ1.text))
+            O22 = Math.radians(float(self.Ɵ2.text))
+            nbrePas = int(self.nbrePas.text)
+            YB = float(self.ordB.text)  # la valeur d'ordonnées de B
+            XB = float(self.absB.text)  # la valeur d'abscisse de B
 
             if YB >= 7 or XB >= 7:
                 print("verifier YB & XA")
@@ -101,7 +102,11 @@ class Robot2DView(MDScreen):
 
             return [nbrePas, L00, A20, A0, YB, XB, L11, L22]
 
+        return False
+
     def showRobot(self):
+        self.verif = False
+        self.restartSimulator = True
         self.plot.cla()
         self.plot.set_xlabel('Y0')
         self.plot.set_ylabel('X0')
@@ -112,6 +117,9 @@ class Robot2DView(MDScreen):
         self.plot.set_ylim((-1, 8))
 
         result = self.calculMatricesPassage()
+        if not result:
+            return
+
         L00 = result[1]
         A20 = result[2]
         A0 = result[3]
@@ -146,7 +154,9 @@ class Robot2DView(MDScreen):
         """
             Dans cette methode nous simulons notre robot, le bras du robot se déplacera jusqu'au point B
         """
+
         async def simulateRobot():
+
             etatBtnPas = True
             etatBtnBip = True
             etatBtnR0 = True
@@ -161,6 +171,8 @@ class Robot2DView(MDScreen):
                 return
 
             result = self.calculMatricesPassage()
+            if not result:
+                return
             nbrePas = int(self.nbrePas.text)
             L0 = result[1]
             L1 = result[6]
@@ -170,10 +182,10 @@ class Robot2DView(MDScreen):
             XB = result[5]
             A20 = result[2]
             vitesse = float(self.dureeTrajetAB.text) / nbrePas
-
+            self.restartSimulator = not self.restartSimulator
             for i in range(1, nbrePas + 1):
                 self.plot.cla()
-                # Définir les propriétés du nouveau graph
+                # Définir les propriétés du restartSimulator graph
                 self.plot.set_xlabel('Y0')
                 self.plot.set_ylabel('X0')
                 self.plot.yaxis.set_ticks_position('right')
@@ -328,17 +340,20 @@ class Robot2DView(MDScreen):
                 # Le sol
                 self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=10)
                 self.plot.plot([0.0, 5.0], [0.0, 0.0], "k--", lw=3)
+
                 # self.plot.grid(True)
-                await asynckivy.sleep(0)
+                await asynckivy.sleep(vitesse)
                 self.graphique.draw()
+
+                self.verif = True
+                if self.restartSimulator:
+                    return
+
                 """
                 if etatBtnBip==True:
                     #Le Bip
                     winsound.Beep(440, 250)
                 """
-
-                # time.sleep(vitesse)
-                # fenetre.update()
 
         asynckivy.start(simulateRobot())
 
@@ -347,14 +362,39 @@ class Robot2DView(MDScreen):
             On vérifie si l'utilisateur a bien renseigné les champs
         :return:
         """
-        if not (self.L0.error and self.L1.error and self.L2.error and self.Ɵ1.error and self.Ɵ2.error
-                and self.ordB.error and self.absB.error and self.dureeTrajetAB.error):  # si tout est renseigné alors
+        if (self.L0.text and self.L1.text and self.L2.text and self.Ɵ1.text and self.Ɵ2.text
+                and self.ordB.text and self.absB.text and self.dureeTrajetAB.text):  # si tout est renseigné alors
             return True
 
         print("VERIFIER VOS SAISIES")
+
+        self.L1.focus = True
+        self.L1.required = True
+        self.L2.focus = True
+        self.L2.required = True
+
+        self.Ɵ1.focus = True
+        self.Ɵ1.required = True
+        self.Ɵ2.focus = True
+        self.Ɵ2.required = True
+
+        self.absB.focus = True
+        self.absB.required = True
+        self.ordB.focus = True
+        self.ordB.required = True
+
+        self.nbrePas.focus = True
+        self.nbrePas.required = True
+        self.dureeTrajetAB.focus = True
+        self.dureeTrajetAB.required = True
+
+        self.L0.focus = True
+        self.L0.required = True
+
         return False
 
     def settingMatplotLib(self):
+        self.restartSimulator = True
 
         self.fig = plt.figure()
         self.plot = self.fig.add_subplot(1, 1, 1)
@@ -371,6 +411,7 @@ class Robot2DView(MDScreen):
 
         """ Nous affichons notre GRAPHE """
         box = self.ids.box
+        box.clear_widgets()
         box.add_widget(self.graphique)
 
     # les boutons
@@ -398,9 +439,6 @@ class Robot2DView(MDScreen):
 
     # Base de données des valeurs par défaut
     def defaultSetting(self):
-        # self.L0 = self.ids.setting.ids.L0.text
-        # self.L1 = self.ids.setting.ids.L1.text
-        # self.L2 = self.ids.setting.ids.L2.text
 
         self.L0.text = str(3.5)
         self.L1.text = str(3)
@@ -410,15 +448,17 @@ class Robot2DView(MDScreen):
         self.absB.text = str(0)
         self.ordB.text = str(1)
         self.nbrePas.text = str(10)
-        self.dureeTrajetAB.text = str(7)
+        self.dureeTrajetAB.text = str(4)
 
     def clearAllField(self):
-        self.L0.text = None
-        self.L1.text = None
-        self.L2.text = None
-        self.Ɵ1.text = None
-        self.Ɵ2.text = None
-        self.absB.text = None
-        self.ordB.text = None
-        self.nbrePas.text = None
-        self.dureeTrajetAB.text = None
+        self.L0.text = ""
+        self.L1.text = ""
+        self.L2.text = ""
+        self.Ɵ1.text = ""
+        self.Ɵ2.text = ""
+        self.absB.text = ""
+        self.ordB.text = ""
+        self.nbrePas.text = ""
+        self.dureeTrajetAB.text = ""
+
+        self.settingMatplotLib()
