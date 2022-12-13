@@ -12,8 +12,6 @@ from View.ManagerScreen.manager_screen import ManagerScreen
 
 import sqlite3
 
-
-
 if getattr(sys, "frozen", False):
     os.environ["ROBOT_KS_ROOT"] = sys._MEIPASS
 else:
@@ -28,8 +26,8 @@ Window.softinput_mode = "below_target"
 class RobotMain(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.title = "Robotiques"
-        self.description = "Le projet de robotique ING-2"
+        self.title = "MIXMO"
+        self.description = "MIXMO Le Robot manipulteur 2D"
         self.icon = "assets/images/logo.png"
         self.theme_cls.material_style = "M3"
         self.theme_cls.primary_palette = "Orange"
@@ -47,7 +45,7 @@ class RobotMain(MDApp):
 
     def build(self) -> ManagerScreen:
         self.manager_screen.add_widget(self.manager_screen.create_screen("menu"))
-        #self.manager_screen.add_widget(self.manager_screen.create_screen("robot2D"))
+        # self.manager_screen.add_widget(self.manager_screen.create_screen("robot2D"))
         return self.manager_screen
 
     def blackwhit(self):

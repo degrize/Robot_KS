@@ -3,6 +3,7 @@
 
 
 <CardNotificationItem@TwoLineAvatarIconListItem>
+
     left_icon: ""
     icon_color: [0, 0, 0, 0]
     theme_text_color: "Custom"
@@ -19,22 +20,24 @@
 
 <CardNotification>
     orientation: "vertical"
+    orientation: "vertical"
     size_hint: None, None
     pos_hint: {"center_x": .5}
     y: "32dp"
     padding: 0
 
-    CardNotificationItem:
-        text: "Démarrage du Logiciel"
-        secondary_text: root.secondary_text_top
-        left_icon: root.icon_top
-        radius: root.radius[0], root.radius[0], 0, 0
-        icon_color: root.icon_color
 
-    CardNotificationItem:
-        text: "Verifications du paramétrage"
-        secondary_text: root.secondary_text_top
-        left_icon: root.icon_top
-        radius: root.radius[0], root.radius[0], 0, 0
-        icon_color: root.icon_color
+
+    ScrollView:
+
+        do_scroll_x: False
+        do_scroll_y: True
+
+        Label:
+            id: infoDebug
+            size_hint_y: None
+            height: self.texture_size[1]
+            text_size: root.width, None
+            padding: 10, 10
+            text:''
 

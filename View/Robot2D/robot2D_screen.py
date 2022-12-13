@@ -14,12 +14,7 @@ import matplotlib
 import math as Math
 import numpy as np
 import time
-
-
-#
-# plt.plot(x, y)
-# plt.ylabel("This is MY Y Axis")
-# plt.xlabel("X Axis")
+from datetime import datetime
 
 
 class Robot2DView(MDScreen):
@@ -39,6 +34,10 @@ class Robot2DView(MDScreen):
         self.btnData = None
         self.L0 = self.ids.setting.ids.L0
 
+        # Le card de débogage
+        self.infoDebug = self.ids.card_notification.ids.infoDebug
+        self.insertToDebug("INFO", "Initialisation du programme MIXMO")
+
         # On prepare notre graphe
         self.settingMatplotLib()
 
@@ -49,7 +48,7 @@ class Robot2DView(MDScreen):
             L22 = float(self.L2.text)
 
             if L00 >= 7 or L11 >= 7 or L22 >= 7:
-                print("verifier L0 - L1 & L2")
+                self.insertToDebug("ERREUR", "verifier L0 - L1 & L2")
                 return
 
             O11 = Math.radians(float(self.Ɵ1.text))
@@ -59,7 +58,7 @@ class Robot2DView(MDScreen):
             XB = float(self.absB.text)  # la valeur d'abscisse de B
 
             if YB >= 7 or XB >= 7:
-                print("verifier YB & XA")
+                self.insertToDebug("ERREUR", "verifier YB & XA")
                 return
 
             # LES MATRICES DE PASSAGE DIRECTE
@@ -89,16 +88,6 @@ class Robot2DView(MDScreen):
             A20 = Mat0T1.dot(A21)
             # notre angle de rotation de 0A2
             rotAngle = Math.degrees(Math.atan2(Mat0T2[[1], [0]], Mat0T2[[0], [0]]))
-            # Le cas les matrices de passage inverse
-            Mat1T0 = np.array([[Math.cos(O11), Math.sin(O11), 0, -L00 * Math.cos(O11)],
-                               [-Math.sin(O11), Math.cos(O11), 0, L00 * Math.sin(O11)],
-                               [0, 0, 1, 0],
-                               [0, 0, 0, 1]])
-
-            Mat2T1 = np.array([[Math.cos(O22), Math.sin(O22), 0, -L00 * Math.cos(O22)],
-                               [-Math.sin(O22), Math.cos(O22), 0, L11 * Math.sin(O22)],
-                               [0, 0, 1, 0],
-                               [0, 0, 0, 1]])
 
             return [nbrePas, L00, A20, A0, YB, XB, L11, L22]
 
@@ -108,8 +97,8 @@ class Robot2DView(MDScreen):
         self.verif = False
         self.restartSimulator = True
         self.plot.cla()
-        self.plot.set_xlabel('Y0')
-        self.plot.set_ylabel('X0')
+        self.plot.set_xlabel('Axe Y0')
+        self.plot.set_ylabel('Axe X0')
         self.plot.yaxis.set_ticks_position('right')
         self.plot.set_xticks(range(8))
         self.plot.set_yticks(range(8))
@@ -118,6 +107,7 @@ class Robot2DView(MDScreen):
 
         result = self.calculMatricesPassage()
         if not result:
+            self.insertToDebug("ERREUR", "Echec des matrices de passage")
             return
 
         L00 = result[1]
@@ -129,25 +119,28 @@ class Robot2DView(MDScreen):
 
         if ((A0[1] - XB) ** 2 + (A0[0] - YB) ** 2) ** 0.5 > result[6] + result[7] or (
                 (A0[1] - XB) ** 2 + (A0[0] - YB) ** 2) ** 0.5 < abs(result[6] - result[7]):
+            self.insertToDebug("ERREUR", "Echec lors du dessin")
             return
 
         if ((A20[1] - 0) ** 2 + (A20[0] - 0) ** 2) ** 0.5 > 7:
+            self.insertToDebug("ERREUR", "Echec lors du dessin")
             return
 
-        self.plot.plot([0.0, 0.0], [0.0, L00], "b-", lw=7)
-        self.plot.plot([0.0, A20[1]], [L00, A20[0]], "b-", lw=7)
-        self.plot.plot([A20[1], A0[1]], [A20[0], A0[0]], "b-", lw=7)
+        self.plot.plot([0.0, 0.0], [0.0, L00], "b-", lw=self.widthLien)
+        self.plot.plot([0.0, A20[1]], [L00, A20[0]], "b-", lw=self.widthLien)
+        self.plot.plot([A20[1], A0[1]], [A20[0], A0[0]], "b-", lw=self.widthLien)
 
-        self.plot.scatter([A0[1]], [A0[0]], s=500, color='red')
-        self.plot.scatter([YB], [XB], s=500, color='red')
+        self.plot.scatter([A0[1]], [A0[0]], s=self.scartter1, marker='$\pitchfork$', color='red', zorder=3)
+        self.plot.scatter([YB], [XB], s=self.scartter1, color='#3dd9c1')
 
-        self.plot.scatter([0.0], [L00], s=500, color='black')
-        self.plot.scatter([A20[1]], [A20[0]], s=500, color='black')
+        self.plot.scatter([0.0], [L00], s=self.scartter1, color='#c46c2d')
+        self.plot.scatter([A20[1]], [A20[0]], s=self.scartter1, color='#c46c2d')
 
-        self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=10)
-        self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=15, lw=3)
-        self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=15, lw=3)
+        self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=3)
+        self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=5, lw=1)
+        self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=5, lw=1)
         self.graphique.draw()
+        self.insertToDebug("INFO", "Le robot est dessiné")
 
     def simulateRobot(self):
 
@@ -158,16 +151,20 @@ class Robot2DView(MDScreen):
         async def simulateRobot():
 
             etatBtnPas = True
-            etatBtnBip = True
-            etatBtnR0 = True
             etatBtnTrajectoire = True
             X_Pi = []
             Y_Pi = []
 
+            self.insertToDebug("INFO", "Démarrage de la simulation")
+
             if self.nbrePas.text == "":
+                # On affiche dans les logs
+                self.insertToDebug("WARNING", "renseignez le nombre de pas")
                 return
 
             if self.dureeTrajetAB.text == "":
+                # On affiche dans les logs
+                self.insertToDebug("WARNING", "renseignez la valeur du trajet")
                 return
 
             result = self.calculMatricesPassage()
@@ -180,7 +177,6 @@ class Robot2DView(MDScreen):
             YB = result[4]
             A0 = result[3]
             XB = result[5]
-            A20 = result[2]
             vitesse = float(self.dureeTrajetAB.text) / nbrePas
             self.restartSimulator = not self.restartSimulator
             for i in range(1, nbrePas + 1):
@@ -193,10 +189,8 @@ class Robot2DView(MDScreen):
                 self.plot.set_yticks(range(8))
                 self.plot.set_xlim((8, -1))
                 self.plot.set_ylim((-1, 8))
-                self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=15, lw=3)
-                self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=15, lw=3)
-                # self.plot.set_axis_off()
-                # self.plot.grid(True)
+                self.plot.plot([0.0, 7.0], [0.0, 0.0], "k", marker='<', markersize=5, lw=1)
+                self.plot.plot([0.0, 0.0], [0.0, 7.0], "k", marker='^', markersize=5, lw=1)
 
                 # Distance X entre deux pas
                 disXPas = (XB - A0[0]) / nbrePas
@@ -221,8 +215,7 @@ class Robot2DView(MDScreen):
                 B1 = -2 * Yi * L1
                 B2 = 2 * L1 * (L0 - Xi)
                 B3 = L2 ** 2 - Yi ** 2 - (L0 - Xi) ** 2 - L1 ** 2
-                teta_1 = 0
-                teta_2 = 0
+
                 SO1 = 0
                 CO1 = 0
                 epsi = 1
@@ -234,6 +227,8 @@ class Robot2DView(MDScreen):
                         CO1 = (B3 * B2 - epsi * B1 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
                         teta_1 = Math.degrees(Math.atan2(SO1, CO1))
                     else:
+                        # On affiche dans les logs
+                        self.insertToDebug("INFO", "simulation terminée")
                         break
                 Yn1 = L2 * SO1
                 Yn2 = L2 * CO1
@@ -241,10 +236,11 @@ class Robot2DView(MDScreen):
                 if L2 != 0:
                     teta_2 = Math.degrees(Math.atan2(Yn1 / L2, Yn2 / L2))
                 else:
+                    # On affiche dans les logs
+                    self.insertToDebug("INFO", "simulation terminée")
                     break
                 XA1i = L1 * Math.cos(Math.radians(teta_1)) + L0
                 YA1i = L1 * Math.sin(Math.radians(teta_1))
-
 
                 # Trajectoire
                 if etatBtnTrajectoire:
@@ -257,9 +253,9 @@ class Robot2DView(MDScreen):
                     x = range(-100, 101)  # ,nbrePas)
                     y = a * x + b
                     # Trace la droite
-                    # self.plot.plot(y,x,"k-",lw=3)
+                    # self.plot.plot(y, x, "k-", lw=1)
                     # Droite entre A et Pi
-                    # self.plot.plot([A0[1],Yi],[A0[0],Xi],"y-",lw=5)
+                    self.plot.plot([A0[1], Yi], [A0[0], Xi], "y-", lw=2)
 
                 # sauvegarde-les coordonnées des Pi
                 X_Pi.append(Xi)
@@ -268,35 +264,35 @@ class Robot2DView(MDScreen):
                 # Les Pas
                 if etatBtnPas:
                     for j in range(0, len(X_Pi)):
-                        self.plot.scatter([Y_Pi[j]], [X_Pi[j]], s=200, color='#3dd9c1')
+                        self.plot.scatter([Y_Pi[j]], [X_Pi[j]], s=self.scartterTrace, color='#5f9acc')
 
                 # for j in range(0,X_Pi.len()):
                 #   print(X_Pi, Y_Pi)
                 # tracer L0
 
-                self.plot.plot([0.0, 0.0], [0.0, L0], "b-", lw=7)
+                self.plot.plot([0.0, 0.0], [0.0, L0], "b-", lw=self.widthLien)
                 # tracer L1
-                self.plot.plot([0.0, YA1i], [L0, XA1i], "b-", lw=7)
+                self.plot.plot([0.0, YA1i], [L0, XA1i], "b-", lw=self.widthLien)
                 # tracer L2
-                self.plot.plot([YA1i, Yi], [XA1i, Xi], "b-", lw=7)
+                self.plot.plot([YA1i, Yi], [XA1i, Xi], "b-", lw=self.widthLien)
                 # Point Pi
-                self.plot.scatter([Yi], [Xi], s=500, color='#FF0000')
+                self.plot.scatter([Yi], [Xi], s=self.scartter1, color='#FF0000')
                 # Point A0
-                self.plot.scatter([0], [L0], s=500, color='black')
+                self.plot.scatter([0], [L0], s=self.scartter1, color='#c46c2d')
                 # Point A2
-                self.plot.scatter([YA1i], [XA1i], s=500, color='black')
+                self.plot.scatter([YA1i], [XA1i], s=self.scartter1, color='#c46c2d')
                 if i != 0:
                     # Le point A
-                    self.plot.scatter([A0[1]], [A0[0]], s=300, color='#006633')
+                    self.plot.scatter([A0[1]], [A0[0]], s=self.scartter2, color='#006633')
                 else:
                     # Le point A
-                    self.plot.scatter([A0[1]], [A0[0]], s=500, color='#FF0000')
+                    self.plot.scatter([A0[1]], [A0[0]], s=self.scartter1, color='#FF0000')
                 if i == nbrePas:
                     # Le point B
-                    self.plot.scatter([YB], [XB], s=300, color='#FF0000')
+                    self.plot.scatter([YB], [XB], s=self.scartter2,  color='#FF0000')
                 else:
                     # Le point B
-                    self.plot.scatter([YB], [XB], s=300, color='#00FF33')
+                    self.plot.scatter([YB], [XB], s=self.scartter2, color='#3dd9c1')
 
                 # Le repere R0
                 """
@@ -324,8 +320,11 @@ class Robot2DView(MDScreen):
                     self.plot.plot([YA1i,l],[XA1i,-16.0],"m--",lw=2)
                 """
                 # Le sol
-                self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=10)
-                self.plot.plot([0.0, 5.0], [0.0, 0.0], "k--", lw=3)
+                self.plot.plot([-0.5, 0.5], [0.0, 0.0], "k-", lw=3)
+                self.plot.plot([0.0, 5.0], [0.0, 0.0], "k--", lw=2)
+
+                # On affiche dans les logs
+                self.insertToDebug("INFO", f"Y : {Yi}  X : {Xi}")
 
                 # self.plot.grid(True)
                 await asynckivy.sleep(vitesse)
@@ -352,7 +351,8 @@ class Robot2DView(MDScreen):
                 and self.ordB.text and self.absB.text and self.dureeTrajetAB.text):  # si tout est renseigné alors
             return True
 
-        print("VERIFIER VOS SAISIES")
+        # On affiche dans les logs
+        self.insertToDebug("ERREUR", "verifier vos saisies")
 
         self.L1.focus = True
         self.L1.required = True
@@ -381,6 +381,10 @@ class Robot2DView(MDScreen):
 
     def settingMatplotLib(self):
         self.restartSimulator = True
+        self.scartter1 = 100
+        self.scartter2 = 80
+        self.scartterTrace = 30
+        self.widthLien = 3
 
         self.fig = plt.figure()
         self.plot = self.fig.add_subplot(1, 1, 1)
@@ -436,6 +440,8 @@ class Robot2DView(MDScreen):
         self.nbrePas.text = str(10)
         self.dureeTrajetAB.text = str(4)
 
+        self.insertToDebug("INFO", "Les valeurs par défaut")
+
     def clearAllField(self):
         self.L0.text = ""
         self.L1.text = ""
@@ -448,3 +454,10 @@ class Robot2DView(MDScreen):
         self.dureeTrajetAB.text = ""
 
         self.settingMatplotLib()
+        self.insertToDebug("INFO", "Réininitialisation du graphe")
+
+    def insertToDebug(self, type_error, message):
+        currentDateAndTime = datetime.now()
+        currentTime = currentDateAndTime.strftime("%H:%M:%S")
+        # Le temps courant est 10:06:55
+        self.infoDebug.text = f"[{currentTime}] " + type_error + ": " + message + "\n\n" + self.infoDebug.text
