@@ -6,8 +6,8 @@ Le projet de simulation d'un robot manipulateur
 
 #### 👌 Explication du projet
 
-###### 1-conformement au critères de participation a la page 3 du document , qu 'avez vous mis en place ?
-Nous avons mis en place un logiciel informatique qui implemente la methode de Denavit-Hartenberg afin de simuler des robots en 2 D avant leur concaption .
+###### 1-conformement aux critères de participation a la page 3 du document , qu 'avez vous mis en place ?
+Nous avons mis en place un logiciel informatique qui implemente la methode de Denavit-Hartenberg afin de simuler des robots en 2 D avant leur conception.
 
 
 ###### 2- quel interet cela a t-il pour un particulier ?
@@ -31,7 +31,7 @@ réalisable à la main ou avec une calculatrice . Et donc arrivé à implémente
 Pour cela nous avons nous sommes servis des mathematiques de l'ingenieur, associé aux algorithmes complexes pour la réalisation de mixmo
 
 
-###### 6- presentez les avantages et inconvénients de ce projet
+###### 6- présentez les avantages et inconvénients de ce projet
 Avantage : Facilite l'apprentissage de la conception robotique ; Automatise de lourdes taches mathématiques houleux ; 
 Permet la conception robotique en un temps records ; Le fait que nous avons pu l'implémenter peut donner de la volonté à 
 d'autre jeune à faire des trucks parfois impossible pour hisser au sommet pour ce qui est de l'informatique .
