@@ -87,9 +87,9 @@ class Robot2DView(MDScreen):
                             [1]])
             A0 = Mat0T2.dot(A2)
             A20 = Mat0T1.dot(A21)
-            # Angle de rotation de 0A2
+            # notre angle de rotation de 0A2
             rotAngle = Math.degrees(Math.atan2(Mat0T2[[1], [0]], Mat0T2[[0], [0]]))
-            # LES MATRICES DE PASSAGE INVERSE
+            # Le cas les matrices de passage inverse
             Mat1T0 = np.array([[Math.cos(O11), Math.sin(O11), 0, -L00 * Math.cos(O11)],
                                [-Math.sin(O11), Math.cos(O11), 0, L00 * Math.sin(O11)],
                                [0, 0, 1, 0],
@@ -234,7 +234,6 @@ class Robot2DView(MDScreen):
                         CO1 = (B3 * B2 - epsi * B1 * Math.sqrt(B1 ** 2 + B2 ** 2 - B3 ** 2)) / (B1 ** 2 + B2 ** 2)
                         teta_1 = Math.degrees(Math.atan2(SO1, CO1))
                     else:
-                        # conf.configure(bg="red")
                         break
                 Yn1 = L2 * SO1
                 Yn2 = L2 * CO1
@@ -242,23 +241,10 @@ class Robot2DView(MDScreen):
                 if L2 != 0:
                     teta_2 = Math.degrees(Math.atan2(Yn1 / L2, Yn2 / L2))
                 else:
-                    # conf.configure(bg="red")
                     break
-                # conf.configure(bg="green")
                 XA1i = L1 * Math.cos(Math.radians(teta_1)) + L0
                 YA1i = L1 * Math.sin(Math.radians(teta_1))
 
-                """
-                #Position des Pi
-                txtTeta1Pi.delete(0,END)
-                txtTeta1Pi.insert(0,float((int(teta_1*1000))/1000))
-                txtTeta2Pi.delete(0,END)
-                txtTeta2Pi.insert(0,float((int(teta_2*1000))/1000))
-                txtXPi.delete(0,END)
-                txtXPi.insert(0,float((int(Xi*1000))/1000))
-                txtYPi.delete(0,END)
-                txtYPi.insert(0,float((int(Yi*1000))/1000))
-                """
 
                 # Trajectoire
                 if etatBtnTrajectoire:
